@@ -914,7 +914,7 @@ class MRI_simulation():
           if rank==0:
               print("Successfully Completed! Elapsed time: %f seconds"%self.elapsed_time)
 
-def PostProcessing(mydomain, mri_para, mri_simu, plt, ms=''):
+def PostProcessing(mydomain, mri_para, mri_simu, plt, ms='', save=True):
     comm = MPI.comm_world
     rank = comm.Get_rank()    
 
@@ -955,11 +955,12 @@ def PostProcessing(mydomain, mri_para, mri_simu, plt, ms=''):
                 plt.figure(10000);
                 plot(u0r_0p, cmap="coolwarm")
                 plt.figure(10001);            
-                plot(u1r_0p, cmap="coolwarm")  
-            File("u0r.pvd")<<u0r_0p
-            File("u1r.pvd")<<u1r_0p
-            File("u0i.pvd")<<u0i_0p
-            File("u1i.pvd")<<u1i_0p
+                plot(u1r_0p, cmap="coolwarm") 
+            if save:
+                File("u0r.pvd")<<u0r_0p
+                File("u1r.pvd")<<u1r_0p
+                File("u0i.pvd")<<u0i_0p
+                File("u1i.pvd")<<u1i_0p
         except:
             if rank==0:
                 print("Could not post-process the solutions for the visualization purposes due to some reasons.")
@@ -974,7 +975,8 @@ def PostProcessing(mydomain, mri_para, mri_simu, plt, ms=''):
         if mydomain.tdim==mydomain.gdim and not(plt==None): 
             plt.figure(10000);
             plot(ur_p, cmap="coolwarm")
-        File("ur.pvd")<<ur_p
+        if save:
+            File("ur.pvd")<<ur_p
         
     if int(rank) == 0:
         print("save to log.txt")
